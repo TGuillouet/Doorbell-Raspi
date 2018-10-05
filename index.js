@@ -1,17 +1,19 @@
-const app = require("express")();
-const http = require("http").Server(app);
 const Sound = require("aplay");
-var io = require('socket.io')(http);
+const exp = require("express");
+const app = require('http').Server(exp);
+const io = require('socket.io')(app);
 
 var isPlaying = false;
 
-http.listen(3000, function(){
-    console.log("Begin listening port 3000");
-    io.on("msg", () => {
-        if (isPlaying === false) {
-            playSound('NeedBackup.wav');
-        }
-    });
+app.listen(3000);
+
+io.on('connection', function (socket) {
+  socket.on('play', function (data) {
+    console.log(data);
+    if (isPlaying === false) {
+      playSound('NeedBackup.wav');
+    }
+  });
 });
 
 function playSound(soundName) {
